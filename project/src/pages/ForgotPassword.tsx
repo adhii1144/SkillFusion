@@ -7,13 +7,13 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 import axios from 'axios';
 
-type Step = 'email' | 'otp' | 'newPassword';
+type Step = 'email' | 'otp' | 'Password';
 
 const ForgotPassword = () => {
   const [step, setStep] = useState<Step>('email');
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
-  const [newPassword, setNewPassword] = useState('');
+  const [Password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,6 +33,8 @@ const ForgotPassword = () => {
     }
   };
 
+
+
   const handleOTPVerification = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -40,7 +42,7 @@ const ForgotPassword = () => {
     try {
       const response = await axios.post(`http://localhost:8080/skill-fusion/forgotPassword/verify/${otp}/${email}`);
       toast.success('OTP verified successfully.');
-      setStep('newPassword');
+      setStep('Password');
     } catch (error: any) {
       const errorMessage = error.response?.data || 'Invalid OTP. Please try again.';
       if (errorMessage === 'OTP expired.') {
@@ -56,16 +58,16 @@ const ForgotPassword = () => {
 
   const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newPassword !== repeatPassword) {
+    if (Password !== repeatPassword) {
       toast.error('Passwords do not match.');
       return;
     }
-
+  
     setIsLoading(true);
-
+  
     try {
       const response = await axios.post(`http://localhost:8080/skill-fusion/forgotPassword/changePassword/${email}`, {
-        Password: newPassword,
+        password: Password, // Changed to match expected backend format
         repeatPassword,
       });
       toast.success('Password successfully updated. Redirecting to login...');
@@ -79,6 +81,7 @@ const ForgotPassword = () => {
       setIsLoading(false);
     }
   };
+  
 
   const renderStep = () => {
     switch (step) {
@@ -130,7 +133,7 @@ const ForgotPassword = () => {
           </motion.form>
         );
 
-      case 'newPassword':
+      case 'Password':
         return (
           <motion.form
             initial={{ opacity: 0, y: 20 }}
@@ -142,8 +145,8 @@ const ForgotPassword = () => {
             <Input
               label="New Password"
               type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              value={Password}
+              onChange={(e) => setPassword(e.target.value)}
               required
               icon={<Lock className="w-5 h-5 text-gray-400" />}
             />

@@ -204,12 +204,13 @@ const Profile = () => {
               <option value="Expert">Expert</option>
             </select>
           </div>
+          
           <Button onClick={handleAddSkill} className="!w-auto mt-4">
             <PlusCircle className="w-5 h-5 mr-2" />
             Add Skill
           </Button>
         </div>
-
+          
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {skills.map((skill, index) => (
             <motion.div key={index} whileHover={{ scale: 1.02 }}>
