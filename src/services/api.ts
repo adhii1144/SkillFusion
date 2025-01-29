@@ -1,7 +1,8 @@
 import toast from 'react-hot-toast';
 
 const API_BASE_URL = 'http://localhost:8080/skill_fusion';
-
+const apiUrl = import.meta.env.VITE_APP_API_URL
+        
 export const api = {
   searchUsers: async (query: string, filters: { bio?: string; location?: string }) => {
     try {
@@ -15,7 +16,7 @@ export const api = {
           toast.error('No token found. Please log in!');
           return;
         }
-      const response = await fetch(`http://localhost:8080/skill-fusion/users?${params.toString()}`, {
+      const response = await fetch(`${apiUrl}/skill-fusion/users?${params.toString()}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -36,7 +37,7 @@ export const api = {
   // Update user profile with new data
   async updateUserProfile(userId: string, data: any) {
     try {
-      const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+      const response = await fetch(`${apiUrl}/skill-fusion/users/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -59,7 +60,7 @@ export const api = {
       const formData = new FormData();
       formData.append('image', file);
 
-      const response = await fetch(`${API_BASE_URL}/users/${userId}/avatar`, {
+      const response = await fetch(`${apiUrl}/skill-fusion/users/${userId}/avatar`, {
         method: 'POST',
         body: formData,
       });

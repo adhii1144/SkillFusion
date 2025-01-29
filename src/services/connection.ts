@@ -1,49 +1,76 @@
-import axios from 'axios';
+import axios from "axios";
+
+// Base API URL from environment variables
+const apiUrl = import.meta.env.VITE_APP_API_URL;
 
 export const connectionService = {
-  // Send a connection request by passing the recipientId as an integer
-  async sendRequest(recipientId: number) {
-    try {
-      await axios.post(`http://localhost:8080/api/connections/requests`, { recipientId });
-    } catch (error) {
-      throw new Error('Failed to send connection request');
-    }
+  // Sends a connection request to the backend
+  sendRequest: async (senderId: number, receiverId: number) => {
+    // Retrieve JWT token from local storage
+    const token = localStorage.getItem("jwt");
+    if (!token) throw new Error("User is not authenticated");
+
+    // Sending POST request to the backend to connect sender and receiver
+    const response = await axios.post(
+      `${apiUrl}/api/connections/connect`,
+      null, // No request body is needed since we're using query params
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        params: {
+          senderId,
+          receiverId, // Pass senderId and receiverId as query parameters
+        },
+      }
+    );
+
+    return response.data; // Backend response: "Connection Request Sent!"
   },
 
-  // Accept a connection request by passing the userId as an integer
-  async acceptRequest(userId: number) {
-    try {
-      await axios.post(`http://localhost:8080/api/connections/requests/${userId}/accept`);
-    } catch (error) {
-      throw new Error('Failed to accept connection request');
-    }
+  // Sends a notification from sender to receiver
+  sendNotification: async (senderId: number, receiverId: number, message: string) => {
+    // Retrieve JWT token from local storage
+    const token = localStorage.getItem("jwt");
+    if (!token) throw new Error("User is not authenticated");
+
+    // Sending POST request to notify the receiver
+    const response = await axios.post(
+      `${apiUrl}/api/connections/sendNotification`,
+      {
+        senderId,
+        receiverId,
+        message,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
   },
 
-  // Reject a connection request by passing the userId as an integer
-  async rejectRequest(userId: number) {
-    try {
-      await axios.post(`http://localhost:8080/api/connections/requests/${userId}/reject`);
-    } catch (error) {
-      throw new Error('Failed to reject connection request');
-    }
-  },
+  // Checks if a connection already exists between two users
+  checkConnection: async (senderId: number, receiverId: number) => {
+    // Retrieve JWT token from local storage
+    const token = localStorage.getItem("jwt");
+    if (!token) throw new Error("User is not authenticated");
 
-  // Fetch a list of user connections (if applicable)
-  async getConnections() {
-    try {
-      const response = await axios.get(`http://localhost:8080/api/connections`);
-      return response.data; // This should return a list of UserDto or connection data
-    } catch (error) {
-      throw new Error('Failed to fetch connections');
-    }
-  },
+    // Sending GET request to verify connection
+    const response = await axios.get(`${apiUrl}/api/connections/checkConnection`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        senderId,
+        receiverId,
+      },
+    });
 
-  // Remove a connection by passing the userId as an integer
-  async removeConnection(userId: number) {
-    try {
-      await axios.delete(`http://localhost:8080/api/connections/${userId}`);
-    } catch (error) {
-      throw new Error('Failed to remove connection');
-    }
+    return response.data; // Boolean indicating if they are already connected
   },
 };

@@ -8,6 +8,8 @@ import Button from '../components/Button';
 import axios from 'axios';
 
 type Step = 'email' | 'otp' | 'Password';
+const apiUrl = import.meta.env.VITE_APP_API_URL;
+
 
 const ForgotPassword = () => {
   const [step, setStep] = useState<Step>('email');
@@ -16,13 +18,15 @@ const ForgotPassword = () => {
   const [Password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
+ 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    
 
     try {
-      const response = await axios.post(`http://localhost:8080/skill-fusion/forgotPassword/verifyEmail/${email}`);
+      
+      const response = await axios.post(`${apiUrl}/skill-fusion/forgotPassword/verifyEmail/${email}`);
       toast.success('OTP sent to your email. Please check your inbox.');
       setStep('otp');
     } catch (error: any) {
@@ -40,7 +44,8 @@ const ForgotPassword = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(`http://localhost:8080/skill-fusion/forgotPassword/verify/${otp}/${email}`);
+      
+      const response = await axios.post(`${apiUrl}/skill-fusion/forgotPassword/verify/${otp}/${email}`);
       toast.success('OTP verified successfully.');
       setStep('Password');
     } catch (error: any) {
@@ -66,7 +71,7 @@ const ForgotPassword = () => {
     setIsLoading(true);
   
     try {
-      const response = await axios.post(`http://localhost:8080/skill-fusion/forgotPassword/changePassword/${email}`, {
+      const response = await axios.post(`${apiUrl}/skill-fusion/profile/forgotPassword/changePassword/${email}`, {
         password: Password, // Changed to match expected backend format
         repeatPassword,
       });

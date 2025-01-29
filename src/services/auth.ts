@@ -1,6 +1,8 @@
 import { jwtDecode } from 'jwt-decode';
 
 const API_BASE_URL = 'http://localhost:8080/api';
+const apiUrl = import.meta.env.VITE_APP_API_URL
+
 
 interface LoginResponse {
   token: string;
@@ -28,7 +30,7 @@ class AuthService {
   }
 
   async login(email: string, password: string): Promise<LoginResponse> {
-    const response = await fetch(`${API_BASE_URL}/login`, {
+    const response = await fetch(`${apiUrl}/skill-fusion/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),

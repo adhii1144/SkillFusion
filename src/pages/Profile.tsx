@@ -32,8 +32,8 @@ const Profile = () => {
           toast.error('No token found. Please log in!');
           return;
         }
-
-        const response = await fetch('http://localhost:8080/skill-fusion/profile', {
+        const apiUrl = import.meta.env.VITE_APP_API_URL
+        const response = await fetch(`${apiUrl}/skill-fusion/profile`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

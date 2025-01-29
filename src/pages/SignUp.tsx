@@ -41,10 +41,11 @@ const SignUp = () => {
       setIsLoading(false);
       return;
     }
+    const apiUrl = import.meta.env.VITE_APP_API_URL
 
     try {
       // Send data to the backend
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/register`, {
+      const response = await fetch(`${apiUrl}/skill-fusion/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

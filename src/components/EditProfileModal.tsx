@@ -55,9 +55,10 @@ const EditProfileModal = ({ isOpen, onClose, onSave, initialData }: EditProfileM
       if (!token) {
         throw new Error("User is not authenticated");
       }
-
-      const response = await axios.put(
-        "http://localhost:8080/skill-fusion/profile/update",
+      const apiUrl = import.meta.env.VITE_APP_API_URL
+     
+        const response = await axios.put(
+        `${apiUrl}/skill-fusion/profile/update`,
         formData,
         {
           headers: {
